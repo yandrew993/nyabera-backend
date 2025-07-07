@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Testimonial {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  relationship String
+  testimonial  String
+  image        String?
+  rating       Int
+  date         DateTime @default(now())
+  approved     Boolean  @default(false)
+}
