@@ -16,4 +16,6 @@ model Testimonial {
   rating       Int
   date         DateTime @default(now())
   approved     Boolean  @default(false)
+  likes        Int      @default(0) // Number of likes
+  hearts       Int      @default(0) // Number of hearts
 }
