@@ -24,3 +24,21 @@ export const createTestimonial = async (req, res) => {
     res.status(500).json({ error: 'Failed to create testimonial' });
   }
 };
+
+export const updateTestimonialReactions = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type } = req.body; // type: 'like' or 'heart'
+    if (!id || !['like', 'heart'].includes(type)) {
+      return res.status(400).json({ error: 'Invalid request' });
+    }
+    const field = type === 'like' ? 'likes' : 'hearts';
+    const updated = await prisma.testimonial.update({
+      where: { id },
+      data: { [field]: { increment: 1 } },
+    });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update reactions' });
+  }
+};
