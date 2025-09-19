@@ -17,7 +17,7 @@ export const createTestimonial = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     const newTestimonial = await prisma.testimonial.create({
-      data: { name, relationship, testimonial, image, rating },
+      data: { name, relationship, testimonial, image, rating, likes: 0, hearts: 0 },
     });
     res.status(201).json(newTestimonial);
   } catch (err) {
