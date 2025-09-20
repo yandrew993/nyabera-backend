@@ -3,7 +3,21 @@ const prisma = new PrismaClient();
 
 export const getTestimonials = async (req, res) => {
   try {
-    const testimonials = await prisma.testimonial.findMany({ orderBy: { date: 'desc' } });
+    const testimonials = await prisma.testimonial.findMany({
+      orderBy: { date: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        relationship: true,
+        testimonial: true,
+        image: true,
+        rating: true,
+        date: true,
+        approved: true,
+        likes: true,
+        hearts: true,
+      },
+    });
     res.json(testimonials);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch testimonials' });
