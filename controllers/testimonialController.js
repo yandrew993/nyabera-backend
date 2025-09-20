@@ -14,8 +14,8 @@ export const getTestimonials = async (req, res) => {
         rating: true,
         date: true,
         approved: true,
-        likes: true,
-        hearts: true,
+        // likes: true,
+        // hearts: true,
       },
     });
     res.json(testimonials);
