@@ -42,14 +42,15 @@ export const createTestimonial = async (req, res) => {
 export const updateTestimonialReactions = async (req, res) => {
   try {
     const { id } = req.params;
-    const { type } = req.body; // type: 'like' or 'heart'
-    if (!id || !['like', 'heart'].includes(type)) {
+    const { type, action } = req.body; // type: 'like' or 'heart', action: 'increment' or 'decrement'
+    if (!id || !['like', 'heart'].includes(type) || !['increment', 'decrement'].includes(action)) {
       return res.status(400).json({ error: 'Invalid request' });
     }
     const field = type === 'like' ? 'likes' : 'hearts';
+    const updateOp = action === 'increment' ? { increment: 1 } : { decrement: 1 };
     const updated = await prisma.testimonial.update({
       where: { id },
-      data: { [field]: { increment: 1 } },
+      data: { [field]: updateOp },
     });
     res.json(updated);
   } catch (err) {
