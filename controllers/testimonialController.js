@@ -60,6 +60,7 @@ export const updateTestimonialReactions = async (req, res) => {
 
 export const getAndrew = async (req, res) => {
   try {
+    console.log('Fetching Andrew records...');
     const andrew = await prisma.andrew.findMany({
       orderBy: { date: 'desc' },
       select: {
@@ -73,42 +74,54 @@ export const getAndrew = async (req, res) => {
         hearts: true,
       },
     });
+    console.log('Andrew records fetched:', andrew);
     res.json(andrew);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch Andrew records' });
+    console.error('Error fetching Andrew records:', err.message);
+    res.status(500).json({ error: 'Failed to fetch Andrew records', details: err.message });
   }
 };
 
 export const createAndrew = async (req, res) => {
   try {
     const { factId, name, comment } = req.body;
+    console.log('Creating Andrew record with:', { factId, name, comment });
+    
     if (!factId || !comment) {
       return res.status(400).json({ error: 'Missing required fields: factId, comment' });
     }
+    
     const newAndrew = await prisma.andrew.create({
       data: { factId, name, comment, likes: 0, hearts: 0 },
     });
+    console.log('Andrew record created:', newAndrew);
     res.status(201).json(newAndrew);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to create Andrew record' });
+    console.error('Error creating Andrew record:', err.message);
+    res.status(500).json({ error: 'Failed to create Andrew record', details: err.message });
   }
 };
 
 export const updateAndrewReactions = async (req, res) => {
   try {
     const { id } = req.params;
-    const { type, action } = req.body; // type: 'like' or 'heart', action: 'increment' or 'decrement'
+    const { type, action } = req.body;
+    console.log('Updating Andrew reactions:', { id, type, action });
+    
     if (!id || !['like', 'heart'].includes(type) || !['increment', 'decrement'].includes(action)) {
       return res.status(400).json({ error: 'Invalid request' });
     }
+    
     const field = type === 'like' ? 'likes' : 'hearts';
     const updateOp = action === 'increment' ? { increment: 1 } : { decrement: 1 };
     const updated = await prisma.andrew.update({
       where: { id },
       data: { [field]: updateOp },
     });
+    console.log('Andrew reactions updated:', updated);
     res.json(updated);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update Andrew reactions' });
+    console.error('Error updating Andrew reactions:', err.message);
+    res.status(500).json({ error: 'Failed to update Andrew reactions', details: err.message });
   }
 };

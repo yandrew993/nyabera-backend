@@ -9,7 +9,8 @@ const app = express();
 
 // Debug middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`, req.body);
+  const body = req.method === 'GET' ? '' : JSON.stringify(req.body);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${body}`);
   next();
 });
 
