@@ -18,7 +18,8 @@ app.use(cors({
   origin: [
     'https://jane-nyabera.vercel.app',
     'http://localhost:3000',
-    'https://nyabera-backend.onrender.com'
+    'https://nyabera-backend.onrender.com',
+    "https://andrewyoung.vercel.app"
   ],
   credentials: true
 }));
