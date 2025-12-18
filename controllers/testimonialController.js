@@ -1,5 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+
+let prisma;
+try {
+  prisma = new PrismaClient();
+  console.log('✓ Prisma Client initialized successfully');
+  console.log('Available models:', Object.keys(prisma).filter(key => !key.startsWith('_')).join(', '));
+} catch (err) {
+  console.error('✗ Failed to initialize Prisma Client:', err.message);
+  process.exit(1);
+}
 
 export const getTestimonials = async (req, res) => {
   try {
@@ -61,6 +70,7 @@ export const updateTestimonialReactions = async (req, res) => {
 export const getAndrew = async (req, res) => {
   try {
     console.log('Fetching Andrew records...');
+    console.log('Prisma andrew model available:', !!prisma.andrew);
     const andrew = await prisma.andrew.findMany({
       orderBy: { date: 'desc' },
       select: {
@@ -78,6 +88,8 @@ export const getAndrew = async (req, res) => {
     res.json(andrew);
   } catch (err) {
     console.error('Error fetching Andrew records:', err.message);
+    console.error('Error stack:', err.stack);
+    console.error('Prisma object keys:', Object.keys(prisma).filter(key => !key.startsWith('_')));
     res.status(500).json({ error: 'Failed to fetch Andrew records', details: err.message });
   }
 };
