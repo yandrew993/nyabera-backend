@@ -6,10 +6,18 @@ import testimonialAndAndrewRoutes from './routes/testimonial.js';
 dotenv.config();
 
 const app = express();
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`, req.body);
+  next();
+});
+
 app.use(cors({
   origin: [
     'https://jane-nyabera.vercel.app',
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://nyabera-backend.onrender.com'
   ],
   credentials: true
 }));
@@ -20,4 +28,5 @@ app.use('/api/testimonials', testimonialAndAndrewRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'NOT SET');
 });
