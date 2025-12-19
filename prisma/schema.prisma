@@ -23,7 +23,7 @@ model Andrew {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   factId       String   // Unique fact identifier (e.g., fact-001)
   name         String?
-  comment         String   // The fun fact text
+  comment      String   // The fun fact text
   date         DateTime @default(now())
   approved     Boolean  @default(false)
   likes        Int      @default(0) // Number of likes

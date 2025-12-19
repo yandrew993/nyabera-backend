@@ -126,6 +126,7 @@ export const updateAndrewReactions = async (req, res) => {
     
     const field = type === 'like' ? 'likes' : 'hearts';
     const updateOp = action === 'increment' ? { increment: 1 } : { decrement: 1 };
+    // Use the MongoDB ObjectId (id field) for updates
     const updated = await prisma.andrew.update({
       where: { id },
       data: { [field]: updateOp },
