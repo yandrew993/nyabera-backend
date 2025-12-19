@@ -138,3 +138,78 @@ export const updateAndrewReactions = async (req, res) => {
     res.status(500).json({ error: 'Failed to update Andrew reactions', details: err.message });
   }
 };
+
+export const getFacts = async (req, res) => {
+  try {
+    console.log('Fetching all facts...');
+    const facts = await prisma.fact.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        factId: true,
+        likes: true,
+        hearts: true,
+        createdAt: true,
+      },
+    });
+    console.log('Facts fetched:', facts);
+    res.json(facts);
+  } catch (err) {
+    console.error('Error fetching facts:', err.message);
+    res.status(500).json({ error: 'Failed to fetch facts', details: err.message });
+  }
+};
+
+export const createFact = async (req, res) => {
+  try {
+    const { factId } = req.body;
+    console.log('Creating fact with:', { factId });
+    
+    if (!factId) {
+      return res.status(400).json({ error: 'Missing required field: factId' });
+    }
+    
+    // Check if fact already exists
+    const existingFact = await prisma.fact.findUnique({
+      where: { factId },
+    });
+    
+    if (existingFact) {
+      return res.status(400).json({ error: 'Fact with this ID already exists' });
+    }
+    
+    const newFact = await prisma.fact.create({
+      data: { factId, likes: 0, hearts: 0 },
+    });
+    console.log('Fact created:', newFact);
+    res.status(201).json(newFact);
+  } catch (err) {
+    console.error('Error creating fact:', err.message);
+    res.status(500).json({ error: 'Failed to create fact', details: err.message });
+  }
+};
+
+export const updateFactReactions = async (req, res) => {
+  try {
+    const { factId } = req.params;
+    const { type, action } = req.body;
+    console.log('Updating fact reactions:', { factId, type, action });
+    
+    if (!factId || !['like', 'heart'].includes(type) || !['increment', 'decrement'].includes(action)) {
+      return res.status(400).json({ error: 'Invalid request' });
+    }
+    
+    const field = type === 'like' ? 'likes' : 'hearts';
+    const updateOp = action === 'increment' ? { increment: 1 } : { decrement: 1 };
+    
+    const updated = await prisma.fact.update({
+      where: { factId },
+      data: { [field]: updateOp },
+    });
+    console.log('Fact reactions updated:', updated);
+    res.json(updated);
+  } catch (err) {
+    console.error('Error updating fact reactions:', err.message);
+    res.status(500).json({ error: 'Failed to update fact reactions', details: err.message });
+  }
+};

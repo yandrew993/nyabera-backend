@@ -19,6 +19,13 @@ model Testimonial {
   likes        Int      @default(0) // Number of likes
   hearts       Int      @default(0) // Number of hearts
 }
+model Fact {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  factId       String   @unique // Unique fact identifier (e.g., fact-001)
+  likes        Int      @default(0) // Number of likes
+  hearts       Int      @default(0) // Number of hearts
+  createdAt    DateTime @default(now())
+}
 model Andrew {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   factId       String   // Unique fact identifier (e.g., fact-001)
